@@ -28,6 +28,9 @@ dotenv.config();
 
   while (ethChainBlockNumber < claimStartingAt) {
     // sleep for 5 seconds and then try again
+    console.log(
+      `Current block number ${ethChainBlockNumber}, claiming starts at ${claimStartingAt}`
+    );
     await new Promise((resolve) => setTimeout(resolve, 5000));
     ethChainBlockNumber = await ethereumRpcProvider.getBlockNumber();
   }
