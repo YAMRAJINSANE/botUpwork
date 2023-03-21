@@ -33,7 +33,7 @@ dotenv.config();
 
   const tokenDistributerContract = new ethers.Contract(
     "0x67a24ce4321ab3af51c2d0a4801c3e111d88c9d9",
-    abi.arb,
+    abi.tokenDistributer,
     arbitrumWallet
   );
 
@@ -45,11 +45,11 @@ dotenv.config();
   let gasLimit = await tokenDistributerContract.estimateGas.claim();
   gasLimit = gasLimit.mul(4).div(3);
   console.log("Gaslimit", gasLimit);
-  const claimTx = await tokenDistributerContract.claim({
+  let tx = await tokenDistributerContract.claim({
     gasLimit,
   });
-  console.log("Claim Tx", claimTx.hash);
-  let receipt = await claimTx.wait();
+  console.log("Claim Tx", tx.hash);
+  let receipt = await tx.wait();
 
   // now transfer token to different address
 
@@ -59,9 +59,6 @@ dotenv.config();
     arbitrumWallet
   );
   const balance = await erc20Contract.balanceOf(arbitrumWallet.address);
-  const tx = await erc20Contract.transfer(
-    destinationAddress,
-    balance.toString()
-  );
+  tx = await erc20Contract.transfer(destinationAddress, balance.toString());
   receipt = await tx.wait();
 })();

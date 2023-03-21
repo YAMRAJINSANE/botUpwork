@@ -1,5 +1,5 @@
 const abi = {
-  arb: [
+  tokenDistributer: [
     {
       inputs: [
         {
