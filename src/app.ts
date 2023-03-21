@@ -17,30 +17,26 @@ dotenv.config();
 
   const privateKey = process.env.PRIVATE_KEY || "";
   const destinationAddress = process.env.DESTINATION_ADDRESS || "";
-  console.log("Private key", privateKey);
+  const arbitrumTokenAddress = process.env.ARBITRUM_TOKEN_ADDRESS || "";
 
+  const tokenDistributerAddress = "0x67a24ce4321ab3af51c2d0a4801c3e111d88c9d9";
   const arbitrumWallet = new ethers.Wallet(privateKey, arbitrumRpcProvider);
 
   const claimStartingAt = 16890400;
 
   console.log("Ethereum Chain Block Number", ethChainBlockNumber);
 
-  //   while (ethChainBlockNumber < claimStartingAt) {
-  //     // sleep for 1 minute and then try again
-  //     await new Promise((resolve) => setTimeout(resolve, 60000));
-  //     ethChainBlockNumber = await ethereumRpcProvider.getBlockNumber();
-  //   }
+  while (ethChainBlockNumber < claimStartingAt) {
+    // sleep for 5 seconds and then try again
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    ethChainBlockNumber = await ethereumRpcProvider.getBlockNumber();
+  }
 
   const tokenDistributerContract = new ethers.Contract(
-    "0x67a24ce4321ab3af51c2d0a4801c3e111d88c9d9",
+    tokenDistributerAddress,
     abi.tokenDistributer,
     arbitrumWallet
   );
-
-  const claimableTokens = await tokenDistributerContract.claimableTokens(
-    "0x4E53051c6Bd7dA2Ad2aa22430AD8543431007D23"
-  );
-  console.log("Claimable Tokens", claimableTokens.toString());
 
   let gasLimit = await tokenDistributerContract.estimateGas.claim();
   gasLimit = gasLimit.mul(4).div(3);
@@ -54,11 +50,16 @@ dotenv.config();
   // now transfer token to different address
 
   const erc20Contract = new ethers.Contract(
-    "0x912ce59144191c1204e64559fe8253a0e49e6548",
+    arbitrumTokenAddress,
     abi.erc20,
     arbitrumWallet
   );
-  const balance = await erc20Contract.balanceOf(arbitrumWallet.address);
+  let balance = await erc20Contract.balanceOf(arbitrumWallet.address);
+  console.log("Balance before", balance.toString());
+
   tx = await erc20Contract.transfer(destinationAddress, balance.toString());
   receipt = await tx.wait();
+
+  balance = await erc20Contract.balanceOf(arbitrumWallet.address);
+  console.log("Balance After", balance.toString());
 })();
