@@ -1,0 +1,22 @@
+{
+  "name": "arb-token-claim",
+  "version": "1.0.0",
+  "description": "Snipes arb token as soon as it launches",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/app.ts",
+    "start": "tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.15.5",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ethers": "^5.4.7"
+  }
+}
