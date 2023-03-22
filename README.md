@@ -13,6 +13,6 @@ npm install
 cp .env.sample > .env
 update .env with respective values
 
-# Run pool-sniper
+# Run token-sniper
 npm run start
 ```
